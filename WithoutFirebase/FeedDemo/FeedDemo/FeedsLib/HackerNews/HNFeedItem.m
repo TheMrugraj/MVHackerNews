@@ -58,7 +58,7 @@
     }
     //UPDATE players SET user_name='steven', age=32 WHERE user_name='steven';
     NSString *strQuery = [NSString stringWithFormat:@"UPDATE tblFeedItem SET url='%@', title='%@', text='%@',timestamp_post=%ld,has_detail=1 where feedId='%@'",[dict[@"url"] sqlParam],[dict[@"title"] sqlParam],[dict[@"text"] sqlParam],[dict[@"time"] integerValue],_itemHNId];
-    BOOL success = [db executeQuery:strQuery];
+    BOOL success = [db executeUpdate:strQuery];
     if(!success){
         NSLog(@"Error");
     }
