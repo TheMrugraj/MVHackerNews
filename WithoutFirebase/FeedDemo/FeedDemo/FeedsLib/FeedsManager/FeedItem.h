@@ -18,6 +18,6 @@ typedef enum : NSUInteger {
 @property(nonatomic,strong)NSString *imageUrl;
 @property(nonatomic,assign)FeedItemType type;
 @property(nonatomic,assign)NSTimeInterval timestamp;
-@property(nonatomic,strong)NSString *hasDetail;
+@property(nonatomic,assign)BOOL hasDetail;
 @property(nonatomic,strong)NSString *text;
 @end

@@ -34,18 +34,24 @@
     
     gblCompletion =  completion;
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager GET:[self itemHNUrl] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        [self dumpDataIntoDB:responseObject];
+    if([self getDetailsFromDB]){
         if(gblCompletion){
             gblCompletion(self);
         }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
-        if(gblCompletion){
-            gblCompletion(error);
-        }
-    }];
+    }else{
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager GET:[self itemHNUrl] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            [self dumpDataIntoDB:responseObject];
+            if(gblCompletion){
+                gblCompletion(self);
+            }
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"Error: %@", error);
+            if(gblCompletion){
+                gblCompletion(error);
+            }
+        }];
+    }
     
 }
 
@@ -64,5 +70,29 @@
     }
     [db close];
     
+}
+
+-(BOOL)getDetailsFromDB{
+    
+    FMDatabase *db = [FMDatabase databaseWithPath:[[Database sharedInstance] GetDataBasePath]];
+    if(![db open]){
+        db = nil;
+        return NO;
+    }
+    
+    NSString *aStrQuery = [NSString stringWithFormat:@"SELECT * FROM tblFeedItem where feedId='%@'",_itemHNId];
+    FMResultSet *result = [db executeQuery:aStrQuery];
+    while ([result next]) {
+        self.title =  [[result stringForColumn:@"title"] decode];
+        self.text  = [[result stringForColumn:@"text"] decode];
+        self.timestamp =  [result longForColumn:@"timestamp_post"];
+        self.url = [result stringForColumn:@"url"];
+        self.imageUrl = [result stringForColumn:@"image"];
+        self.hasDetail = [result boolForColumn:@"has_detail"];
+        self.type =  kFeedTypeHN;
+    }
+    [result close];
+    [db close];
+    return self.hasDetail;
 }
 @end

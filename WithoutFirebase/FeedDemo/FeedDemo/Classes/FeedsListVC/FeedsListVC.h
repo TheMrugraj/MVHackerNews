@@ -9,5 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface FeedsListVC : UIViewController
-
+@property (weak, nonatomic) IBOutlet UISegmentedControl *segmentControl;
+@property(weak,nonatomic)IBOutlet UITableView *tblView;
+- (IBAction)segmentDidChanged:(UISegmentedControl *)sender;
 @end

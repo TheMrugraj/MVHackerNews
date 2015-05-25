@@ -11,7 +11,9 @@ typedef void(^HNCompletionHandler)(id object);
 @interface HNFeedItem : FeedItem{
     HNCompletionHandler gblCompletion;
 }
+
 @property(nonatomic,strong)NSString *itemHNId;
+
 -(instancetype)initWithId:(NSString*)strHNItemId;
 -(void)fetchDetailWithCompletion:(HNCompletionHandler)completion;
 @end

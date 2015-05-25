@@ -14,7 +14,12 @@
 
 typedef void(^HNCompletionHandler)(id object);
 
-@interface HackersNewsManager : NSObject
+@interface HackersNewsManager : NSObject{
+    HNCompletionHandler gblCompletionHandler,gblListCompletionHandler;
+    NSInteger totalFeeds,counter;
+}
+
+@property(nonatomic,strong)NSMutableArray *mutArrHNFeeds,*cacheTopFeeds,*cacheNewFeeds;
 
 +(id)sharedInstance;
 -(void)fetchItemIdsCompletion:(HNCompletionHandler)completion withType:(MVHNIdFetchType)type;

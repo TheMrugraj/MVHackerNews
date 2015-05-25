@@ -7,8 +7,13 @@
 //
 
 #import "FeedsListVC.h"
-
+#import "HackersNewsManager.h"
+#import "FeedListCell.h"
 @interface FeedsListVC ()
+{
+    NSMutableArray *mutArrDatasource;
+}
+
 
 @end
 
@@ -16,6 +21,19 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [[HackersNewsManager sharedInstance] fetchItemIdsCompletion:^(id object) {
+        
+            [[HackersNewsManager sharedInstance]fetchItemDetailsForItemObjects:object completion:^(id object) {
+                
+                    if([object isKindOfClass:[NSArray class]]){
+                        mutArrDatasource = object;
+                        [_tblView reloadData];
+                    }
+                
+            }];
+    
+    } withType:kMVHNIdsNew];
     // Do any additional setup after loading the view.
 }
 
@@ -34,4 +52,41 @@
 }
 */
 
+#pragma mark -----------------------
+#pragma mark TableVew Datasource Methods
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return mutArrDatasource.count;
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    FeedListCell *aCell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+    FeedItem *feedItem = [mutArrDatasource objectAtIndex:indexPath.row];
+    aCell.textLabel.text =feedItem.title;
+    return aCell;
+}
+
+
+- (IBAction)segmentDidChanged:(UISegmentedControl *)sender {
+    [[HackersNewsManager sharedInstance] fetchItemIdsCompletion:^(id object) {
+        if([object isKindOfClass:[NSArray class]]){
+            mutArrDatasource = object;
+            [_tblView reloadData];
+        }
+        [[HackersNewsManager sharedInstance]fetchItemDetailsForItemObjects:object completion:^(id object) {
+            
+            if([object isKindOfClass:[NSArray class]]){
+                mutArrDatasource = object;
+                [_tblView reloadData];
+            }
+        }];
+    } withType:sender.selectedSegmentIndex];
+}
 @end

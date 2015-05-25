@@ -21,17 +21,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     [[Database sharedInstance]createEditableCopyOfDatabaseIfNeeded];
-     [[HackersNewsManager sharedInstance] fetchItemIdsCompletion:^(id object) {
-        [[HackersNewsManager sharedInstance]fetchItemDetailsForItemObjects:object completion:^(id object) {
-            
-        }];
-     } withType:kMVHNIdsTop];
+     
     
-//    feedItem = [[HNFeedItem alloc]initWithId:@"9578299"];
-//    
-//    [feedItem fetchDetailWithCompletion:^(id object) {
-//        
-//    }];
+
     return YES;
 }
 
